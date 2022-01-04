@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const contactOperation = require('./../../model/index.js');
 const Joi = require('joi');
-const { reset } = require('nodemon');
 
 router.get('/', async (req, res, next) => {
   const contacts = await contactOperation.listContacts(); 
@@ -34,38 +33,18 @@ router.get('/:contactId', async (req, res, next) => {
 })
 
 router.post('/', async (req, res, next) => {
-  const schema = Joi.object({
-    name: Joi.string().required(),
-    email: Joi.required(),
-    phone: Joi.required()
-  })
 
-  const validationResult = schema.validate(req.body);
+const result = await contactOperation.addContact(req.body);
 
-  if (validationResult.error) {
-    return res.status(400).json({"message": `missing required name field`})
-  }
-
+if (result.error) {
+  res.status(400).json({"message": `missing required name field`})
+}
 else {
-  const {name, email, phone} = req.body;
-  const contacts = await contactOperation.listContacts();
-  const lastId = contacts[contacts.length - 1];
-  
-  const newContact = {
-    id: String(+lastId.id + 1),
-    name,
-    email,
-    phone
-  }
-
-contacts.push(newContact);
-contactOperation.addContact(contacts);
-
   res.status(201).json({
     "status": "success",
     "code": 201,
     "data": {
-      newContact
+      result
     }
   })
 }
@@ -85,8 +64,30 @@ router.delete('/:contactId', async (req, res, next) => {
 
 })
 
-router.patch('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
+router.put('/:contactId', async (req, res, next) => {
+  const { contactId } = req.params;
+
+  if (Object.entries(req.body).length) {
+  const result = await contactOperation.updateContact(contactId, req.body);
+
+    if (result.error) {
+      res.status(400).json({message: result.error.message});
+    }
+    else {
+      res.json({
+        status: "success",
+        code: 200,
+        data: result
+      })
+    }
+
+  }
+
+  else {
+    res.status(400).json({message: "missing fields"});
+  }
 })
+
+
 
 module.exports = router
