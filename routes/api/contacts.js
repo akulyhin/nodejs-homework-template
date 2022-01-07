@@ -2,8 +2,12 @@ const express = require('express')
 const router = express.Router()
 const contactOperation = require('./../../model/index.js');
 
+const {Contact} = require("./../../models/index.js");
+
+
 router.get('/', async (req, res, next) => {
-  const contacts = await contactOperation.listContacts(); 
+  // const contacts = await contactOperation.listContacts();
+  const contacts = await Contact.find()
   res.json({
       "status": "success",
       "code": 200,
@@ -33,7 +37,8 @@ router.get('/:contactId', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
 
-const result = await contactOperation.addContact(req.body);
+// const result = await contactOperation.addContact(req.body);
+const result = await Contact.create(req.body);
 
 if (result.error) {
   res.status(400).json({"message": `missing required name field`})
