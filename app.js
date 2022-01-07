@@ -1,11 +1,25 @@
-const express = require('express')
-const logger = require('morgan')
-const cors = require('cors')
-require('dotenv').config()
+const express = require('express');
+const logger = require('morgan');
+const cors = require('cors');
+require('dotenv').config();
+const mongoose = require("mongoose");
+const DB_HOST = `mongodb+srv://${process.env.LOGIN}:${process.env.PASSWORD}@cluster0.iuxfm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 
-const contactsRouter = require('./routes/api/contacts')
+mongoose.connect(DB_HOST, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => {
+  console.log("Database connection successful");
+})
+.catch(error => {
+  console.log(error.message);
+})
 
-const app = express()
+
+const contactsRouter = require('./routes/api/contacts');
+
+const app = express();
 
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short'
 
