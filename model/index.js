@@ -2,15 +2,42 @@ const fs = require('fs/promises');
 const contacts = require('./contacts.json');
 const path = require("path");
 const Joi = require('joi');
+const {Schema, model} = require("mongoose");
 
+const contactSchema = Schema({
+  name: {
+    type: String,
+    required: [true, 'Set name for contact'],
+  },
+  email: {
+    type: String,
+  },
+  phone: {
+    type: String,
+  },
+  favorite: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const joiSchema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.required(),
+  phone: Joi.required(),
+  favorite: Joi.boolean()
+})
+
+const Contact = model("contact", contactSchema);
 
 
 const contactsPath = path.join(__dirname, "contacts.json");
 
 const listContacts = async () => {
   try {
-    const data = await fs.readFile(contactsPath);
-    const result = JSON.parse(data);
+    // const data = await fs.readFile(contactsPath);
+    
+    const result = Contact.find();
     return result;
   }
 
@@ -21,12 +48,7 @@ const listContacts = async () => {
 }
 
 const getContactById = async (contactId) => {
-  const data = await fs.readFile(contactsPath);
-  const result = JSON.parse(data);
-
-  const contact = result.filter(el=> el.id === contactId);
-
-  return contact;
+  return await Contact.find({_id: contactId});
 }
 
 
