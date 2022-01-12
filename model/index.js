@@ -34,10 +34,8 @@ const Contact = model("contact", contactSchema);
 const contactsPath = path.join(__dirname, "contacts.json");
 
 const listContacts = async () => {
-  try {
-    // const data = await fs.readFile(contactsPath);
-    
-    const result = Contact.find();
+  try {    
+    const result = await Contact.find();
     return result;
   }
 
