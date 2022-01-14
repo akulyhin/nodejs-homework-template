@@ -51,7 +51,7 @@ const getContactById = async (contactId) => {
 
 const removeContact = async (contactId) => {
   try {
-    return await Contact.findByIdAndRemove(contactId);
+    return await Contact.findByIdAndDelete(contactId);
   }
 
   catch(err) {
@@ -113,9 +113,6 @@ const updateStatusContact = async (contactId, body) => {
   }
 }
 
-const getContactsByFavorite = async (contactId) => {
-
-}
 
 module.exports = {
   listContacts,
