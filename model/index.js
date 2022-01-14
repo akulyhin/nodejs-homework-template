@@ -49,7 +49,6 @@ const getContactById = async (contactId) => {
   }
 }
 
-
 const removeContact = async (contactId) => {
   try {
     return await Contact.findByIdAndRemove(contactId);

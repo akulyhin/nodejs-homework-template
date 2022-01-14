@@ -18,12 +18,8 @@ router.get('/:contactId', async (req, res, next) => {
   const {contactId} = req.params;
   
   const contact = await contactOperation.getContactById(contactId);
-
-  if (contact.message) {
-    res.status(400).json({message: contact.message});
-  }
   
- else if(contact) {
+  if (contact && !contact.message) {
     res.json({
       "status": "success",
       "code": 200,
@@ -32,6 +28,10 @@ router.get('/:contactId', async (req, res, next) => {
       }
     })
   }
+  else if (contact && contact.message) {
+    res.status(400).json({message: contact.message});
+  }
+  
   else {
     next();
   }
