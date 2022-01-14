@@ -1,6 +1,3 @@
-const fs = require('fs/promises');
-const contacts = require('./contacts.json');
-const path = require("path");
 const Joi = require('joi');
 const {Schema, model} = require("mongoose");
 
@@ -31,12 +28,9 @@ const joiSchema = Joi.object({
 const Contact = model("contact", contactSchema);
 
 
-const contactsPath = path.join(__dirname, "contacts.json");
-
 const listContacts = async () => {
   try {    
-    const result = await Contact.find();
-    return result;
+    return await Contact.find();
   }
 
     catch(error) {
@@ -46,21 +40,19 @@ const listContacts = async () => {
 }
 
 const getContactById = async (contactId) => {
-  return await Contact.find({_id: contactId});
+  try {
+    return await Contact.findById(contactId);
+  }
+  catch(error) {
+    error.message = 'Не нашли такой айди';
+    return error;
+  }
 }
 
 
 const removeContact = async (contactId) => {
   try {
-    const index = contacts.findIndex(el => el.id === contactId);
-
-    if (index !== -1) {
-      contacts.splice(index, 1);
-    }
-
-    const result = await getContactById(contactId);
-    await fs.writeFile(contactsPath, JSON.stringify(contacts));
-    return result;
+    return await Contact.findByIdAndRemove(contactId);
   }
 
   catch(err) {
@@ -71,34 +63,14 @@ const removeContact = async (contactId) => {
 
 const addContact = async (body) => {
   try {
-    const schema = Joi.object({
-      name: Joi.string().required(),
-      email: Joi.required(),
-      phone: Joi.required()
-    })
-  
-    const validationResult = schema.validate(body);
+    const validationResult = joiSchema.validate(body);
   
     if (validationResult.error) {
       return validationResult;
     }
   
     else {
-      const {name, email, phone} = body;
-      const contacts = await listContacts();
-      const lastId = contacts[contacts.length - 1];
-      
-      const newContact = {
-        id: String(+lastId.id + 1),
-        name,
-        email,
-        phone
-      }
-    
-      contacts.push(newContact);
-      const data = JSON.stringify(contacts);
-      fs.writeFile(contactsPath, data);
-      return newContact;
+      return await Contact.create(body);
     }
   }
   catch(err) {
@@ -121,21 +93,29 @@ const updateContact = async (contactId, body) => {
   }
 
   else {
-    const { name, email, phone } = body;
-    const contacts = await listContacts();
-  
-    contacts.forEach(item => {
-      if (item.id === contactId) {
-        if (name) item.name = name;
-        if (email) item.email = email;
-        if (phone) item.phone = phone;
-      }
-    });
-    
-    fs.writeFile(contactsPath, JSON.stringify(contacts));
-    const [result] = await getContactById(contactId);
+    const result = await Contact.findByIdAndUpdate(contactId, body, {new: true});
     return result;
+
   }
+}
+
+const updateStatusContact = async (contactId, body) => {
+  const schema = Joi.object({
+    favorite: Joi.boolean()
+  })
+
+  const validationResult = schema.validate(body);
+  if (validationResult.error) {
+    return validationResult;
+  }
+
+  else {
+    return await Contact.findByIdAndUpdate(contactId, body, {new: true});
+  }
+}
+
+const getContactsByFavorite = async (contactId) => {
+
 }
 
 module.exports = {
@@ -144,4 +124,5 @@ module.exports = {
   removeContact,
   addContact,
   updateContact,
+  updateStatusContact
 }
