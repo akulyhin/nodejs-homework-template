@@ -1,10 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const contactOperation = require('./../../model/index.js');
-const Joi = require('joi');
+
 
 router.get('/', async (req, res, next) => {
-  const contacts = await contactOperation.listContacts(); 
+  const contacts = await contactOperation.listContacts();
   res.json({
       "status": "success",
       "code": 200,
@@ -16,9 +16,10 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:contactId', async (req, res, next) => {
   const {contactId} = req.params;
-  const [contact] = await contactOperation.getContactById(contactId);
-
-  if (contact) {
+  
+  const contact = await contactOperation.getContactById(contactId);
+  
+  if (contact && !contact.message) {
     res.json({
       "status": "success",
       "code": 200,
@@ -27,6 +28,10 @@ router.get('/:contactId', async (req, res, next) => {
       }
     })
   }
+  else if (contact && contact.message) {
+    res.status(400).json({message: contact.message});
+  }
+  
   else {
     next();
   }
@@ -53,7 +58,7 @@ else {
 router.delete('/:contactId', async (req, res, next) => {
   const { contactId } = req.params;
 
-  const [deleteContact] = await contactOperation.removeContact(contactId);
+  const deleteContact = await contactOperation.removeContact(contactId);
 
   if (deleteContact) {
     res.status(200).json({message: "contact deleted"})
@@ -69,6 +74,7 @@ router.put('/:contactId', async (req, res, next) => {
 
   if (Object.entries(req.body).length) {
   const result = await contactOperation.updateContact(contactId, req.body);
+
 
     if (result.error) {
       res.status(400).json({message: result.error.message});
@@ -88,6 +94,28 @@ router.put('/:contactId', async (req, res, next) => {
   }
 })
 
+router.patch('/:contactId/favorite', async (req, res, next) => {
+  const {contactId} = req.params;
+  
+if (!Object.entries(req.body).length) {
+  res.status(400).json({message: "missing field favorite"});
+}
+else {
+  const result = await contactOperation.updateStatusContact(contactId, req.body);
+
+  if (result.error) {
+    res.status(400).json({message: result.error.message});
+  }
+  else {
+    res.json({
+      status: "success",
+      code: 200,
+      data: result
+    })
+  }
+}
+})
 
 
-module.exports = router
+
+module.exports = router;
