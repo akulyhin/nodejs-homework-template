@@ -19,6 +19,9 @@ const login = async (req, res, next) => {
         throw new Unauthorized("Email or password is wrong");
     }
 
+    const payload = {
+        id: user._id
+    }
     const token = jwt.sign(payload, SECRET_KEY, {expiresIn: "1h"});
 
     res.status(200).json({
