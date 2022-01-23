@@ -1,7 +1,4 @@
 const express = require('express');
-const {BadRequest, Conflict, Unauthorized} = require('http-errors');
-const jwt = require('jsonwebtoken');
-const {SECRET_KEY} = process.env;
 
 const {controllerWrapper, validation} = require('../../middleware');
 const {joiSchema, loginSchema} = require('../../model/users.js');
