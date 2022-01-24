@@ -2,12 +2,12 @@ const express = require('express')
 const router = express.Router()
 const contactOperation = require('./../../model/index.js');
 
-const {controllerWrapper, validation} = require('../../middleware');
+const {controllerWrapper, validation, authToken} = require('../../middleware');
 const {joiSchema} = require('../../model/contacts');
 const {contacts:ctrl} = require('../../controllers');
 
 
-router.get('/', controllerWrapper(ctrl.listContacts));
+router.get('/', authToken(), controllerWrapper(ctrl.listContacts));
 
 router.get('/:contactId', controllerWrapper(ctrl.getContactById));
 

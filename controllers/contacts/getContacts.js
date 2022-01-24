@@ -5,18 +5,19 @@ const {Unauthorized} = require('http-errors');
 
 
 const listContacts = async (req, res) => {
-  const {authorization} = req.headers;
+  console.log("TEST", id);
 
-  if (!authorization) {
-      throw new Unauthorized('Invalid token');
-  }
-  const [bearer, token] = authorization.split(" ");
-  if (bearer !== 'Bearer') {
-      throw new Unauthorized();
-  }
+  // const {authorization} = req.headers;
 
-  try {
-    const {id} = jwt.verify(token, SECRET_KEY);
+  // if (!authorization) {
+  //     throw new Unauthorized('Invalid token');
+  // }
+  // const [bearer, token] = authorization.split(" ");
+  // if (bearer !== 'Bearer') {
+  //     throw new Unauthorized();
+  // }
+
+  //   const {id} = jwt.verify(token, SECRET_KEY);
 
     const contacts = await Contact.find({owner: id});
 
@@ -27,12 +28,7 @@ const listContacts = async (req, res) => {
           contacts
         }
     })
-  }
-
-  catch(error) {
-      error.status(401);
-      throw error;
-  }
+  
 }
 
   module.exports = listContacts;
