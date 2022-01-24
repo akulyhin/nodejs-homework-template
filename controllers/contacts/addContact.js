@@ -5,16 +5,8 @@ const {Unauthorized} = require('http-errors');
 
 
 const addContact = async (req, res) => {
-
     const {name, email, phone, favorite} = req.body;
-    const {authorization} = req.headers;
-
-    if (!authorization) {
-        throw new Unauthorized('Invalid token');
-    }
-    
-    const [bearer, token] = authorization.split(" ");
-    const {id} = jwt.verify(token, SECRET_KEY);
+    const {_id:id} = req.user;
     
     const newContact = {
         name,

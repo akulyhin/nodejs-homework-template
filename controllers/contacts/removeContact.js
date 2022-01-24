@@ -6,17 +6,7 @@ const {Unauthorized, NotFound} = require('http-errors');
 const removeContact = async (req, res) => {
     const {contactId} = req.params;
 
-    const {authorization} = req.headers;
-
-    if (!authorization) {
-        throw new Unauthorized('Invalid token');
-    }
-    const [bearer, token] = authorization.split(" ");
-    if (bearer !== 'Bearer') {
-        throw new Unauthorized();
-    }
-
-    const {id} = jwt.verify(token, SECRET_KEY);
+    const {_id:id} = req.user;
 
     const result = await Contact.findOneAndRemove({_id: contactId, owner: id});
 

@@ -5,21 +5,9 @@ const {Unauthorized} = require('http-errors');
 
 
 const listContacts = async (req, res) => {
-  console.log("TEST", id);
 
-  // const {authorization} = req.headers;
-
-  // if (!authorization) {
-  //     throw new Unauthorized('Invalid token');
-  // }
-  // const [bearer, token] = authorization.split(" ");
-  // if (bearer !== 'Bearer') {
-  //     throw new Unauthorized();
-  // }
-
-  //   const {id} = jwt.verify(token, SECRET_KEY);
-
-    const contacts = await Contact.find({owner: id});
+  const {_id} = req.user;
+  const contacts = await Contact.find({owner: _id});
 
     res.status(201).json({
         status: "success",

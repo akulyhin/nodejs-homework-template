@@ -9,15 +9,15 @@ const {contacts:ctrl} = require('../../controllers');
 
 router.get('/', authToken(), controllerWrapper(ctrl.listContacts));
 
-router.get('/:contactId', controllerWrapper(ctrl.getContactById));
+router.get('/:contactId', authToken(), controllerWrapper(ctrl.getContactById));
 
-router.post('/', validation(joiSchema), controllerWrapper(ctrl.addContact));
+router.post('/', validation(joiSchema), authToken(), controllerWrapper(ctrl.addContact));
 
-router.delete('/:contactId', controllerWrapper(ctrl.removeContact));
+router.delete('/:contactId', authToken(), controllerWrapper(ctrl.removeContact));
 
-router.put('/:contactId', controllerWrapper(ctrl.updateContact));
+router.put('/:contactId', authToken(), controllerWrapper(ctrl.updateContact));
 
-router.patch('/:contactId/favorite', controllerWrapper(ctrl.updateStatusContact));
+router.patch('/:contactId/favorite', authToken(), controllerWrapper(ctrl.updateStatusContact));
 
 
 
