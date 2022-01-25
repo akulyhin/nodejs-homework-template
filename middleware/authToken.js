@@ -8,16 +8,16 @@ const authToken = () => {
     return async(req, res, next) => {
         const {authorization} = req.headers;
         if (!authorization) {
-            res.status(409).json({
-                message: "Invalid token"
+            res.status(401).json({
+                message: "Not authorized"
             });
             return;
         }
         const [bearer, token] = authorization.split(" ");
 
         if (bearer !== 'Bearer') {
-            res.status(409).json({
-                message: "Invalid token"
+            res.status(401).json({
+                message: "Not authorized"
             });
             return;
         }
@@ -26,7 +26,7 @@ const authToken = () => {
             const user = await User.findById(id);
 
             if (!user) {
-                throw new Unauthorized('Invalid token');
+                throw new Unauthorized('Not authorized');
             }
             req.user = user;
             next();
