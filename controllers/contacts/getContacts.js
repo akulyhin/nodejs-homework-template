@@ -1,7 +1,4 @@
 const {Contact} = require('../../model');
-const jwt = require('jsonwebtoken');
-const {SECRET_KEY} = process.env;
-const {Unauthorized} = require('http-errors');
 
 
 const listContacts = async (req, res) => {

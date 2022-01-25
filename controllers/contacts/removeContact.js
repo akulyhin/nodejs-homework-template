@@ -1,7 +1,4 @@
 const {Contact} = require('../../model');
-const jwt = require('jsonwebtoken');
-const {SECRET_KEY} = process.env;
-const {Unauthorized, NotFound} = require('http-errors');
 
 const removeContact = async (req, res) => {
     const {contactId} = req.params;

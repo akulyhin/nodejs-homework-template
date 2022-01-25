@@ -1,7 +1,5 @@
 const {Contact} = require('../../model');
-const jwt = require('jsonwebtoken');
-const {SECRET_KEY} = process.env;
-const {Unauthorized} = require('http-errors');
+
 
 
 const addContact = async (req, res) => {
