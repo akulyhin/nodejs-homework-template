@@ -6,15 +6,15 @@ const listContacts = async (req, res) => {
   const skip = (+page - 1) * +limit;
 
   const {_id} = req.user;
-  const total = await Contact.find({owner: _id});
+  const total = await Contact.find({owner: _id}).count();
   const contacts = await Contact.find({owner: _id}, "", {skip, limit: +limit}).populate("owner", "email");
 
-  const totalPage = Math.ceil(total.length / +limit);
+  const totalPage = Math.ceil(total / +limit);
 
     res.status(201).json({
         status: "success",
         code: 201,
-        total: total.length,
+        total: total,
         page,
         totalPage,
         body: {
