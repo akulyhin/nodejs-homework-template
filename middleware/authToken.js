@@ -8,26 +8,33 @@ const authToken = () => {
     return async(req, res, next) => {
         const {authorization} = req.headers;
         if (!authorization) {
-            res.code(409).json({
-                message: 'Invalud token',
-                code: 409
-            })
+            res.status(409).json({
+                message: "Invalid token"
+            });
             return;
         }
         const [bearer, token] = authorization.split(" ");
 
         if (bearer !== 'Bearer') {
-            res.code(409).json({
-                message: 'Invalud token',
-                code: 409
-            })
+            res.status(409).json({
+                message: "Invalid token"
+            });
             return;
         }
-        const {id} = jwt.verify(token, SECRET_KEY);
-        const user = await User.findById(id);
+        try {
+            const {id} = jwt.verify(token, SECRET_KEY);
+            const user = await User.findById(id);
 
-        req.user = user;
-        next();
+            if (!user) {
+                throw new Unauthorized('Invalid token');
+            }
+            req.user = user;
+            next();
+        }
+        catch(error) {
+            error.status = 401;
+            next(error)
+        }
     }
 }
 

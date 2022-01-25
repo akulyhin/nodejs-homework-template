@@ -3,14 +3,10 @@ const {Contact} = require('../../model');
 
 
 const addContact = async (req, res) => {
-    const {name, email, phone, favorite} = req.body;
     const {_id:id} = req.user;
     
     const newContact = {
-        name,
-        email,
-        phone,
-        favorite,
+        ...req.body,
         owner: id
     };
 

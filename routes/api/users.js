@@ -1,11 +1,11 @@
 const express = require('express');
-const {controllerWrapper, validation} = require('../../middleware');
+const {controllerWrapper, authToken} = require('../../middleware');
 const {users:ctrl} = require('../../controllers');
 
 const router = express.Router();
 
 
-router.get('/current', controllerWrapper(ctrl.current));
+router.get('/current', authToken(), controllerWrapper(ctrl.current));
 
 
 module.exports = router;

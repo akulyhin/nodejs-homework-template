@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 
 
 const register = async (req, res) => {
-    const {email, password} = req.body;
+    const {email, password, subscription = 'starter'} = req.body;
     const user = await User.findOne({email});
 
     if (user) {
@@ -14,10 +14,15 @@ const register = async (req, res) => {
     const hashPassword  = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
     await User.create({email, password: hashPassword});
+
     res.status(201).json({
         status: "access",
         code: 201,
-        message: "Register success"
+        message: "Register success",
+        user: {
+            email,
+            subscription
+        }
     })
 };
 

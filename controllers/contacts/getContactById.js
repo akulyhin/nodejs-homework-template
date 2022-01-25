@@ -5,7 +5,7 @@ const getContactById = async (req, res) => {
     const {_id:owner} = req.user;
 
       // const contact = await Contact.findById(contactId);
-      const contact = await Contact.findOne({_id: contactId, owner});
+      const contact = await Contact.findOne({_id: contactId, owner}); 
 
       res.json({
         "status": "success",
