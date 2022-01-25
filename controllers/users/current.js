@@ -1,5 +1,7 @@
 const current = async (req, res, next) => {
 
+    console.log(req.query);
+
     try {
         const {user} = req;
       

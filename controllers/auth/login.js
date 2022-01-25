@@ -3,7 +3,6 @@ const {Unauthorized} = require("http-errors");
 const bcrypt = require('bcryptjs');
 const {SECRET_KEY} = process.env;
 const jwt = require('jsonwebtoken');
-const { subscribe } = require("../../routes/api/auth");
 
 const login = async (req, res) => {
     const {email, password} = req.body;
