@@ -1,12 +1,12 @@
 const express = require('express');
 
-const {controllerWrapper, validation, authToken} = require('../../middleware');
+const {controllerWrapper, validation, authToken, upload} = require('../../middleware');
 const {joiSchema, loginSchema} = require('../../model/users.js');
 const {auth:ctrl} = require('../../controllers');
 
 const router = express.Router();
 
-router.post("/signup", validation(joiSchema), controllerWrapper(ctrl.register));
+router.post("/signup", validation(joiSchema), upload.single('avatar'), controllerWrapper(ctrl.register));
 
 router.post("/login", validation(loginSchema), controllerWrapper(ctrl.login))
 
