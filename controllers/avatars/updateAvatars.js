@@ -2,7 +2,6 @@ const fs = require('fs/promises');
 const path = require('path');
 const {User} = require('../../model');
 const Jimp = require('jimp');
-const {Unauthorized} = require('http-errors');
 
 const updateAvatars = async (req, res) => {
     const {_id} = req.user;
@@ -17,17 +16,10 @@ const updateAvatars = async (req, res) => {
     const avatar = path.join('avatars', filename);
     const newAvatar = await User.findByIdAndUpdate(_id, {avatarURL:avatar}, {new: true});
 
-    console.log(uploadDir);
 
-    if (!newAvatar) {
-        throw new Unauthorized();
-    }
-
-    await fs.rename(tempDir, uploadDir);
-
-    // Jimp.read(uploadDir, (err, rsAvatar) => {
-    //     rsAvatar.resize(250, 250).write('test.png');
-    // })
+    const image = await Jimp.read(tempDir);
+    image.resize(250, 250).write(uploadDir);
+    await fs.unlink(tempDir);
 
     res.json({
         message: "Avatar is updated",
