@@ -1,9 +1,5 @@
-const current = async (req, res, next) => {
-
-    console.log(req.query);
-
-    try {
-        const {user} = req;
+const current = async (req, res) => {
+        const {user} = req.query;
       
       res.status(201).json({
           status: "success",
@@ -12,12 +8,6 @@ const current = async (req, res, next) => {
               user
           }
       })
-    }
-
-    catch(error) {
-        error.status(401);
-        throw error;
-    }
 }
 
 module.exports = current;
