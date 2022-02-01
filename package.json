@@ -1,0 +1,27 @@
+{
+  "name": "nodejs-homework-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "ws": "^8.4.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app",
+    "start:dev": "nodemon app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akulyhin/nodejs-homework-template.git"
+  },
+  "author": "akulyhin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/akulyhin/nodejs-homework-template/issues"
+  },
+  "homepage": "https://github.com/akulyhin/nodejs-homework-template#readme"
+}
