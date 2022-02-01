@@ -7,6 +7,95 @@
     <title>Web chat</title>
 </head>
 <body>
-    
+
+
+    <style>
+        #chat {
+            margin-top: 20px;
+            width: 400px;
+            height: 250px;
+            border: 2px solid #000;
+        }
+
+        .your-chat-message {
+            padding: 5px;
+            border-radius: 8px;
+            background-color: #bcbcbc;
+            font-size: 16px;
+        }
+
+        .user-chat-message {
+            padding: 5px;
+            border-radius: 8px;
+            background-color: #0080cc;
+            font-size: 16px;
+        }
+
+    </style>
+<form action="" id="user-name-form">
+    <label for="name">
+        Пожалуйста представтесь
+        <input type="text" name="userName" id="name">
+    </label>
+</form>
+
+<div id="chat">
+</div>
+
+<form style="margin-top: 20px;" id="chat-form">
+    <textarea name="message" id="chat_message" cols="50" rows="3" placeholder="Новое сообщение" required></textarea>
+<br><button type="submit">Отправить</button>
+</form>
+
+
+
+    <script>
+        const ws = new WebSocket("ws://localhost:5000");
+
+        let userName = '';
+        const userNameForm = document.getElementById('user-name-form');
+
+        userNameForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            userName = e.target.elements.userName.value;
+            e.target.remove();
+        })
+
+        const chat = document.getElementById('chat');
+        const chatForm = document.getElementById('chat-form');
+        
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const message = e.target.elements.message.value;
+
+            const data = {
+                name: userName,
+                message
+            };
+
+            ws.send(JSON.stringify(data));
+
+            chat.insertAdjacentHTML('beforeend', `
+            <p>
+                <span class="name">${userName}</span>
+                <p class="your-chat-message">${message}</p>
+            </p>`);
+
+            e.target.reset();
+        })
+
+        ws.onmessage = ({data}) => {
+            const {name, message} = JSON.parse(data);
+
+            chat.insertAdjacentHTML('beforeend', `
+            <p>
+                <span class="name">${name}</span>
+                <p class="user-chat-message">${message}</p>
+            </p>`);
+
+        }
+
+    </script>
 </body>
 </html>
