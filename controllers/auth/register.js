@@ -1,16 +1,16 @@
 const {User} = require('../../model');
 const {Conflict} = require("http-errors");
 const bcrypt = require('bcryptjs');
+const {sendEmailNodemailer} = require('../../helpers');
+const {nanoid} = require('nanoid');
 
-const fs = require('fs/promises');
-const path = require('path');
 const gravatar = require('gravatar');
+
+const {MY_HOST} = process.env;
+
 
 const register = async (req, res) => {
     const {email, password, subscription = 'starter'} = req.body;
-    // const {path:tempDir, originalname} = req.file;
-    // const uploadDir = path.join(__dirname, '../../public/avatars', originalname);
-
 
     const user = await User.findOne({email});
 
@@ -18,11 +18,17 @@ const register = async (req, res) => {
         throw new Conflict("Already register");
     }
     const hashPassword  = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-    // await fs.rename(tempDir, uploadDir);
-
     const avatarURL = gravatar.url(email, {protocol: 'https', s: '200'});
 
-    await User.create({email, password: hashPassword, avatarURL});
+    const verificationToken = nanoid();
+
+    await User.create({email, password: hashPassword, avatarURL, verificationToken});
+
+    sendEmailNodemailer({
+        to: email,
+        subject: "Verify your email",
+        html: `<a href="${MY_HOST}/users/verify/${verificationToken}">Confirm Email</a>`
+    });
 
     res.status(201).json({
         status: "access",

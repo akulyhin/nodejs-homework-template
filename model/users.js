@@ -5,7 +5,9 @@ const joiSchema = Joi.object({
     password: Joi.string().required(),
     email: Joi.string().email().required(),
     subscription: Joi.string(),
-    token: Joi.string()
+    token: Joi.string(),
+    avatarURL: Joi.string(),
+    verify: Joi.boolean(),
 });
 
 const loginSchema = Joi.object({
@@ -34,7 +36,15 @@ const usersSchema = Schema({
     },
     avatarURL: {
       type: String
-    }
+    },
+      verify: {
+        type: Boolean,
+        default: false,
+      },
+      verificationToken: {
+        type: String,
+        required: [true, 'Verify token is required'],
+      }
   }, {versionKey: false, timestamps: true})
 
   const User = model("user", usersSchema);
